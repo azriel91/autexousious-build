@@ -1,0 +1,71 @@
+# Handle git submodules yourself
+git:
+  submodules: false
+
+language: cpp
+compiler:
+- gcc
+- clang
+
+before_install:
+  # Configure git
+- git config --global user.email "$USER_EMAIL"
+- git config --global user.name "$USER_NAME"
+- git config --global push.default simple
+- git checkout $TRAVIS_BRANCH
+
+  # Use sed to replace the SSH URL with the public URL, then initialize submodules
+- sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+- git submodule update --init --recursive
+
+install:
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo apt-get update -qq
+
+  # Install g++
+- if [ "$CXX" = "g++" ]; then
+    sudo apt-get install -qq g++-4.8;
+    export CXX="g++-4.8" CC="gcc-4.8";
+    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90;
+  fi
+
+  # Install clang
+- if [ "$CXX" = "clang++" ]; then
+    sudo apt-get install -qq clang;
+    export CXX="clang++" CC="clang";
+    sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 90;
+    sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 90;
+  fi
+
+  # Install Biicode
+- wget -O bii-ubuntu64.deb http://www.biicode.com/downloads/latest/ubuntu64
+- "(sudo dpkg -i bii-ubuntu64.deb) && sudo apt-get -f install"
+- bii --version
+- bii user $USER -p $BII_PASSWORD
+- rm bii-ubuntu64.deb
+
+  # Install CMake
+- wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-Linux-64.tar.gz
+- tar -xzf cmake-3.0.2-Linux-64.tar.gz
+- sudo cp -fR cmake-3.0.2-Linux-64/* /usr
+- rm -rf cmake-3.0.2-Linux-64
+- rm cmake-3.0.2-Linux-64.tar.gz
+
+- export TRAVIS_CXX=$CXX
+
+script:
+- bii init
+- bii configure "-DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}"
+- bii build
+- bii build --target test
+
+env:
+  global:
+  - USER_EMAIL=azriel91@gmail.com
+  - USER_NAME="azriel"
+  - USER=azriel
+    # BII_PASSWORD
+  - secure: "hvFCHhclzfFYlh5crvyNPlg0U46JVKsEJzyKlt4ByNgbp3eOL6E6pruZqxqEYQDz3AGn3yP8yAoHie+sM7FpNQvbC3kSMDbHHICbNLzgn0ho75xBgly4ZBA0POcgvjU7TA5qE1LhgUmPunXNOmWGoVRCfnYtB2wSrCMKXWLjABX3CAH0TEp4kmylOgg5NmPcl1VejQi9x2AoIleLIj3MaUWHUbGsNtpYG8jnRXuQ8rRbSbQEQU/xt0zNebni+1TQhlswv00UruGfM+ABhqRe95j1qCHU5TslhjULAUoadV/mc5N3yWbpEnH7ZHHziMPtrPlquXe8sPXnOnMAugTrkAgYDTxxS6+phnAn1IOtiPCiCWROdRmBWgup8sHv5E3Ds4I5vTKbd1COzneJm7N3/A443fUnMYg6viJA/dLpSYFHG4GXNJTOLlTzK6xbGp9z0PfCYzaLeUpzrA/Uk6dAjy7JnQIC2J5Bm+rbYBhrJcEz4NU3iOUCfoqXNBR19QeUg0s3//XAyIIv3ssm7RtyEBDgJCNx8b+hrqa+1qnPIFgD1KXrSA1g7eXtkgsm1RnKCBWP9JyWujpekD7GC0u5oX3Wgb8coekCuUYlJi2P3axnaI4psVqRuhsjl95pMKOR4lk+afd3O1RhGeQIYBSDPl9zcX8p+tVyT8gJPaQjdQ4="
+  matrix:
+  - BUILD_SHARED_LIBS=OFF
+  - BUILD_SHARED_LIBS=ON
