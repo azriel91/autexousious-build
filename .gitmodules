@@ -13,3 +13,6 @@
 [submodule "blocks/azriel/sl_ax_main"]
 	path = blocks/azriel/sl_ax_main
 	url = git@github.com:azriel91/sl_ax_main.git
+[submodule "bii-support"]
+	path = bii-support
+	url = https://github.com/azriel91/bii-support.git
