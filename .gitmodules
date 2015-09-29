@@ -1,18 +1,18 @@
 [submodule "blocks/azriel/usbundleloader"]
 	path = blocks/azriel/usbundleloader
-	url = git@github.com:azriel91/usbundleloader.git
+	url = https://github.com/azriel91/usbundleloader.git
 [submodule "blocks/azriel/sl_core_application"]
 	path = blocks/azriel/sl_core_application
-	url = git@github.com:azriel91/sl_core_application.git
+	url = https://github.com/azriel91/sl_core_application.git
 [submodule "blocks/azriel/sl_ax_engine"]
 	path = blocks/azriel/sl_ax_engine
-	url = git@github.com:azriel91/sl_ax_engine.git
+	url = https://github.com/azriel91/sl_ax_engine.git
 [submodule "blocks/azriel/sl_cmake"]
 	path = blocks/azriel/sl_cmake
-	url = git@github.com:azriel91/sl_cmake.git
+	url = https://github.com/azriel91/sl_cmake.git
 [submodule "blocks/azriel/sl_ax_main"]
 	path = blocks/azriel/sl_ax_main
-	url = git@github.com:azriel91/sl_ax_main.git
+	url = https://github.com/azriel91/sl_ax_main.git
 [submodule "bii-support"]
 	path = bii-support
 	url = https://github.com/azriel91/bii-support.git
